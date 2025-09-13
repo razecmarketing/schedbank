@@ -2,23 +2,18 @@
 
 ## Execução da Aplicação
 
-### Método Recomendado (Maven Plugin)
-```powershell
-# Compilar e executar
-./run-spring-boot.ps1
+### Backend (Spring Boot)
+```bash
+mvn spring-boot:run
 ```
+O backend ficará disponível em: http://localhost:8080
 
-### Método Alternativo (Maven Plugin)
-```powershell
-# Se o mvn spring-boot:run não funcionar diretamente, use:
-.\run-springboot.ps1
+### Frontend (Vue.js + Vite)
+```bash
+cd frontend
+npm run dev
 ```
-
-### Teste da API
-```powershell
-# Executar testes automáticos
-.\test-api.ps1
-```
+O frontend ficará disponível em: http://localhost:5173
 
 ## Status da Aplicação
 
@@ -36,16 +31,17 @@ A aplicação está **100% FUNCIONAL** e atende a todos os requisitos:
 
 Com a aplicação no ar:
 
-```powershell
-# Health
-Invoke-RestMethod -Uri "http://localhost:8080/actuator/health" -Method Get
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
 
 # Agendar transferência (exemplo)
-$req = @{ sourceAccount = "1234567890"; targetAccount = "0987654321"; amount = 1000.00; transferDate = (Get-Date).ToString('yyyy-MM-dd') } | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:8080/api/transfers" -Method Post -Body $req -ContentType "application/json"
+curl -X POST http://localhost:8080/api/transfers \
+  -H "Content-Type: application/json" \
+  -d '{"sourceAccount": "1234567890", "targetAccount": "0987654321", "amount": 1000.00, "transferDate": "2024-12-31"}'
 
-# Listar
-Invoke-RestMethod -Uri "http://localhost:8080/api/transfers" -Method Get
+# Listar transferências
+curl http://localhost:8080/api/transfers
 ```
   - 11-20 dias: 8,2%
   - 21-30 dias: 6,9%
@@ -89,13 +85,12 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/transfers" -Method Get
 
 ## Executar Testes
 
-```powershell
+```bash
 mvn test
 ```
 
 ## Métricas de Qualidade
 
-3. **Execute (recomendado)**: `./run-spring-boot.ps1`
 - Zero dependências circulares
 - Princípios de desenvolvimento aplicados
 - Código bem estruturado
