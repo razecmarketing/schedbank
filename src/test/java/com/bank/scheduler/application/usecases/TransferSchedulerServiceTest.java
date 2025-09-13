@@ -1,6 +1,7 @@
 package com.bank.scheduler.application.usecases;
 
 import com.bank.scheduler.domain.entities.Transfer;
+import com.bank.scheduler.domain.exceptions.DomainException;
 import com.bank.scheduler.domain.policies.FeePolicy;
 import com.bank.scheduler.domain.ports.TransferRepository;
 import com.bank.scheduler.domain.valueobjects.AccountNumber;
@@ -76,7 +77,7 @@ class TransferSchedulerServiceTest {
         when(feePolicy.isApplicable(any(), any())).thenReturn(false);
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(DomainException.NoApplicableFeePolicy.class, () -> 
             service.scheduleTransfer(sourceAccount, targetAccount, Money.of(amount), transferDate),
             "Should throw exception when no fee policy is applicable"
         );
