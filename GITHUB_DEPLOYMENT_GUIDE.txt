@@ -201,25 +201,25 @@ Commit 26: "docs: update documentation with deployment guide"
 
 ### 3.1 Template de PR
 ```markdown
-## 🎯 Objective
+## Objective
 Brief description of what this PR accomplishes
 
-## 🏗️ Architecture Impact
+## Architecture Impact
 - Which layers are affected
 - Design patterns used
 - SOLID principles applied
 
-## 🧪 Testing
+## Testing
 - [ ] Unit tests added/updated
 - [ ] Integration tests passing
 - [ ] Manual testing completed
 
-## 📚 Documentation
+## Documentation
 - [ ] Code is self-documenting
 - [ ] Architecture docs updated
 - [ ] README updated if needed
 
-## 🔍 Code Quality
+## Code Quality
 - [ ] No code duplication
 - [ ] Clean Code principles followed
 - [ ] Performance implications considered
@@ -250,22 +250,22 @@ v1.2.0 - Performance optimizations
 ```markdown
 # Release v1.0.0 - MVP Complete
 
-## 🚀 New Features
+## New Features
 - Complete transfer scheduling system
 - Clean Architecture implementation
 - Vue.js responsive frontend
 
-## 🏗️ Architecture Highlights
+## Architecture Highlights
 - SOLID principles throughout
 - Strategy pattern for fee policies
 - Repository pattern for data access
 
-## 🧪 Quality Metrics
+## Quality Metrics
 - 95% code coverage
 - Zero code duplication
 - All SOLID principles applied
 
-## 🔧 Technical Stack
+## Technical Stack
 - Java 17 + Spring Boot 3.0
 - Vue.js 3 + Composition API
 - H2 Database + JPA
