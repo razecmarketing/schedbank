@@ -21,37 +21,43 @@ public class TransferServiceHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        return healthCheckTimer.recordCallable(() -> {
-            try {
-                // Check database connectivity
-                boolean databaseHealthy = checkDatabaseConnectivity();
-                
-                // Check external services
-                boolean externalServicesHealthy = checkExternalServices();
-                
-                // Check system resources
-                boolean resourcesHealthy = checkSystemResources();
-                
-                if (databaseHealthy && externalServicesHealthy && resourcesHealthy) {
-                    return Health.up()
-                        .withDetail("database", "Connected")
-                        .withDetail("externalServices", "Available")
-                        .withDetail("systemResources", "Optimal")
-                        .withDetail("version", "1.0.0")
-                        .build();
-                } else {
+        try {
+            return healthCheckTimer.recordCallable(() -> {
+                try {
+                    // Check database connectivity
+                    boolean databaseHealthy = checkDatabaseConnectivity();
+                    
+                    // Check external services
+                    boolean externalServicesHealthy = checkExternalServices();
+                    
+                    // Check system resources
+                    boolean resourcesHealthy = checkSystemResources();
+                    
+                    if (databaseHealthy && externalServicesHealthy && resourcesHealthy) {
+                        return Health.up()
+                            .withDetail("database", "Connected")
+                            .withDetail("externalServices", "Available")
+                            .withDetail("systemResources", "Optimal")
+                            .withDetail("version", "1.0.0")
+                            .build();
+                    } else {
+                        return Health.down()
+                            .withDetail("database", databaseHealthy ? "Connected" : "Disconnected")
+                            .withDetail("externalServices", externalServicesHealthy ? "Available" : "Unavailable")
+                            .withDetail("systemResources", resourcesHealthy ? "Optimal" : "Limited")
+                            .build();
+                    }
+                } catch (Exception e) {
                     return Health.down()
-                        .withDetail("database", databaseHealthy ? "Connected" : "Disconnected")
-                        .withDetail("externalServices", externalServicesHealthy ? "Available" : "Unavailable")
-                        .withDetail("systemResources", resourcesHealthy ? "Optimal" : "Limited")
+                        .withDetail("error", e.getMessage())
                         .build();
                 }
-            } catch (Exception e) {
-                return Health.down()
-                    .withDetail("error", e.getMessage())
-                    .build();
-            }
-        });
+            });
+        } catch (Exception e) {
+            return Health.down()
+                .withDetail("error", e.getMessage())
+                .build();
+        }
     }
 
     private boolean checkDatabaseConnectivity() {

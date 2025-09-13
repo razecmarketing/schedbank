@@ -27,12 +27,7 @@ public class SecurityConfiguration {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .headers(headers -> headers
                 .frameOptions().deny()
-                .contentTypeOptions().and()
-                .httpStrictTransportSecurity(hsts -> hsts
-                    .maxAgeInSeconds(31536000)
-                    .includeSubdomains(true)
-                )
-                .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+                .contentTypeOptions()
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health", "/api/docs/**").permitAll()

@@ -56,23 +56,19 @@ public class MetricsCollector {
     }
 
     public void incrementTransfersFailed(String reason) {
-        transfersFailedCounter.increment(
-            io.micrometer.core.instrument.Tags.of("reason", reason)
-        );
+        transfersFailedCounter.increment();
     }
 
     public Timer.Sample startTransferProcessingTimer() {
-        return Timer.start(transferProcessingTimer);
+        return Timer.start();
     }
 
     public Timer.Sample startFeeCalculationTimer() {
-        return Timer.start(feeCalculationTimer);
+        return Timer.start();
     }
 
     public void incrementSecurityViolations(String violationType) {
-        securityViolationsCounter.increment(
-            io.micrometer.core.instrument.Tags.of("type", violationType)
-        );
+        securityViolationsCounter.increment();
     }
 
     public void recordCustomMetric(String metricName, double value, String... tags) {
