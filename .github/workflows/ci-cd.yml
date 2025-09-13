@@ -201,7 +201,70 @@ jobs:
     environment: production
     
     steps:
-    - name: Deploy to Production Environment
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Deploy to EKS Cluster
       run: |
-        echo "Deploying to production environment..."
-        # Add deployment scripts here
+        aws eks update-kubeconfig --name schedbank-prod-cluster
+        kubectl apply -f k8s/
+        kubectl rollout status deployment/schedbank-app -n schedbank-prod --timeout=300s
+
+    - name: Run Production Health Checks
+      run: |
+        # Wait for deployment to be ready
+        sleep 60
+        # Health check
+        curl -f https://api.schedbank.com/actuator/health || exit 1
+        # Performance test
+        curl -f https://api.schedbank.com/actuator/metrics || exit 1
+
+    - name: Notify Team
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: "🚀 SchedBank Production Deployment: ${{ job.status }}"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Run Load Tests
+      uses: k6-io/action@v0.3.0
+      with:
+        filename: tests/performance/load-test.js
+        flags: --out json=results.json
+
+    - name: Upload Performance Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-results
+        path: results.json
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Run OWASP ZAP Security Scan
+      uses: zaproxy/action-full-scan@v0.8.0
+      with:
+        target: 'http://localhost:8080'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
