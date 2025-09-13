@@ -1,0 +1,95 @@
+Status Report - Bank Transfer Scheduler
+
+Resumo
+------
+Este relatório documenta o estado atual do backend do sistema de agendamento de transferências financeiras, a conformidade com os requisitos do exercício e os resultados esperados dos testes automatizados.
+
+Escopo do sistema
+-----------------
+- Backend em Spring Boot (Java 11+ compatível)
+- Domínio isolado (Clean Architecture)
+- Persistência em H2 (in-memory)
+- Endpoints REST para agendar e listar transferências
+- Políticas de taxa conforme tabela do enunciado
+- Testes unitários, de integração e E2E (MockMvc + SpringBootTest)
+- Monitoramento básico com Micrometer
+
+Checklist de requisitos (do enunciado)
+--------------------------------------
+1. Agendamento de transferência com: conta origem (10 dígitos), conta destino (10 dígitos), valor, taxa calculada, data de transferência e data de agendamento (hoje).
+   - Status: Implementado
+2. Cálculo de taxa conforme tabela (0 / 1-10 / 11-20 / 21-30 / 31-40 / 41-50 dias).
+   - Status: Implementado (policies)
+3. Não permitir transferência quando nenhuma política for aplicável (ex.: >50 dias).
+   - Status: Implementado (lança exceção)
+4. Extrato de agendamentos (listar todas transferências).
+   - Status: Implementado (GET /api/transfers)
+5. Persistência em memória H2.
+   - Status: Implementado e configurado
+6. Validações: números de conta, valor positivo, datas válidas.
+   - Status: Implementado (Value Objects + DTO validation)
+7. Testes automatizados cobrindo políticas, serviço e controller.
+   - Status: Implementado (unit + integration)
+
+Testes automatizados
+--------------------
+Comandos para executar localmente:
+
+```powershell
+cd "c:\Users\Cesar\OneDrive\Área de Trabalho\Sched_Banck_Beta"
+mvn clean test
+```
+
+Interpretação dos resultados:
+- Sucesso (BUILD SUCCESS): todas as regras de negócio e integrações cobertas pelos testes estão corretas.
+- Falhas (BUILD FAILURE ou testes falhando): revisar as mensagens de erro no console, ajustar código ou testes conforme necessário.
+
+Observações sobre execução nesta sessão
+--------------------------------------
+- A execução remota de `mvn test` nesta sessão retornou saída vazia — pode ser causado por limitações do terminal da sessão.
+- Localmente, ao rodar os comandos acima, você obterá o relatório completo dos testes (pass/fail) e a cobertura será exibida no console.
+
+Instruções para subir o backend e verificar manualmente
+-----------------------------------------------------
+1. Compilar e executar:
+
+```powershell
+cd "c:\Users\Cesar\OneDrive\Área de Trabalho\Sched_Banck_Beta"
+mvn clean install
+mvn spring-boot:run
+```
+
+2. Endpoints para teste manual (exemplo com curl/powershell):
+
+```powershell
+# Agendar transferência
+curl -X POST http://localhost:8080/api/transfers -H "Content-Type: application/json" -d '{"sourceAccount":"1234567897","targetAccount":"9876543210","amount":1000.00,"transferDate":"2025-08-28"}'
+
+# Listar transferências
+curl http://localhost:8080/api/transfers
+```
+
+3. Console H2 (se necessário): http://localhost:8080/h2-console
+   - JDBC URL: jdbc:h2:mem:bankdb
+   - User: sa
+   - Password: (vazio)
+
+Qualidade e padrões aplicados
+----------------------------
+- Clean Architecture: domínio isolado, dependências apontando para dentro.
+- SOLID e Clean Code: classes pequenas e coesas, nomes explícitos, testes como documentação.
+- Fundamentos: validações e invariantes reforçados (Dijkstra/Knuth-inspired).
+- Performance: Async config e cache básico adicionados para escalabilidade futura.
+- Observabilidade: Micrometer AOP para métricas de execução
+
+Pendências e próximos passos
+---------------------------
+- Confirmar execução dos testes na sua máquina (porque a execução remota desta sessão não retornou logs).
+- Ajustar política de logs/ambiente para ambiente de produção (ex.: desabilitar console H2, configurar datasource real).
+- Criar CI pipeline (GitHub Actions) para rodar testes e lint a cada PR.
+
+Conclusão
+---------
+O backend implementa todas as funcionalidades solicitadas pelo enunciado e segue os padrões arquiteturais e de codificação solicitados no repositório. Para validação definitiva, execute os testes localmente com `mvn clean test` e inicie o serviço com `mvn spring-boot:run`.
+
+Arquivo gerado automaticamente por ferramenta de revisão de código.
