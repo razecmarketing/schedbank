@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    
+    <root level="OFF">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+    
+    <logger name="com.bank.scheduler" level="ERROR"/>
+    <logger name="org.springframework" level="OFF"/>
+    <logger name="org.hibernate" level="OFF"/>
+    <logger name="com.zaxxer" level="OFF"/>
+</configuration>
