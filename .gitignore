@@ -33,6 +33,14 @@ dependency-reduced-pom.xml
 .project
 .classpath
 
+# Frontend - Node.js
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/dist/
+frontend/build/
+
 # OS
 .DS_Store
 Thumbs.db
