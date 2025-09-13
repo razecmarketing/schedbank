@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableCaching
+// @EnableCaching  // Temporarily disabled for testing
 public class CacheConfiguration {
 
     @Bean

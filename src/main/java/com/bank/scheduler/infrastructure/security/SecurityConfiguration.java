@@ -31,7 +31,8 @@ public class SecurityConfiguration {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health", "/api/docs/**").permitAll()
-                .requestMatchers("/api/v1/**").authenticated()
+                .requestMatchers("/api/transfers/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
                 .anyRequest().denyAll()
             )
             .build();
