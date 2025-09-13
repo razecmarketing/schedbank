@@ -3,51 +3,49 @@ package com.bank.scheduler.domain.entities;
 import com.bank.scheduler.domain.exceptions.DomainException;
 import com.bank.scheduler.domain.valueobjects.AccountNumber;
 import com.bank.scheduler.domain.valueobjects.Money;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "transfers")
+/**
+ * Transfer Domain Entity - Core Business Logic
+ * 
+ * Domain Invariants:
+ * - sourceAccount != targetAccount (no self-transfers)
+ * - amount > 0 (positive transfer amounts)
+ * - transferDate >= scheduleDate (no past-dated execution)
+ * - fee >= 0 (non-negative fees)
+ * 
+ * This entity contains pure business logic with no framework dependencies.
+ */
 public final class Transfer {
     
-    @Id
-    private UUID id;
-    
-    @Column(nullable = false, length = 10)
-    private String sourceAccount;
-    
-    @Column(nullable = false, length = 10)
-    private String targetAccount;
-    
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal amount;
-    
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal fee;
-    
-    @Column(nullable = false)
-    private LocalDate scheduleDate;
-    
-    @Column(nullable = false)
-    private LocalDate transferDate;
+    // Pure domain fields - no technical framework concerns
+    private final UUID id;
+    private final AccountNumber sourceAccount;
+    private final AccountNumber targetAccount;
+    private final Money amount;
+    private final Money fee;
+    private final LocalDate scheduleDate;
+    private final LocalDate transferDate;
 
-    // Construtor padrão para JPA
-    protected Transfer() {}
-
+    /**
+     * Private constructor enforces business rules at creation time.
+     * 
+     * All domain constraints validated here following defensive programming.
+     * Technical persistence concerns handled separately.
+     */
     private Transfer(
             UUID id,
-            String sourceAccount,
-            String targetAccount,
-            BigDecimal amount,
-            BigDecimal fee,
+            AccountNumber sourceAccount,
+            AccountNumber targetAccount,
+            Money amount,
+            Money fee,
             LocalDate scheduleDate,
             LocalDate transferDate) {
-        validateTransferDates(scheduleDate, transferDate);
-        validateAccounts(sourceAccount, targetAccount);
-        validateAmount(amount);
+        
+        // Validate all business rules before creating object
+        validateBusinessInvariants(sourceAccount, targetAccount, amount, fee, scheduleDate, transferDate);
         
         this.id = id;
         this.sourceAccount = sourceAccount;

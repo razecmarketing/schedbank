@@ -2,14 +2,34 @@ package com.bank.scheduler.domain.policies;
 
 import com.bank.scheduler.domain.valueobjects.Money;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Same Day Fee Policy Tests")
+/**
+ * Same Day Fee Policy Test Suite - Comprehensive Coverage
+ * 
+ * Test Strategy:
+ * 1. Tests serve as living documentation 
+ * 2. Test-first development approach
+ * 3. Coverage of all business scenarios and edge cases
+ * 
+ * Test Categories:
+ * - Edge cases: zero amount, minimum amount, large amounts
+ * - Boundary conditions: exact same day, different days
+ * - Business rule verification: fee calculation correctness
+ * 
+ * Each test validates a specific business requirement or mathematical property.
+ */
+@DisplayName("Same Day Fee Policy - Complete Test Coverage")
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 class SameDayFeePolicyTest {
+    
     private final SameDayFeePolicy policy = new SameDayFeePolicy();
 
     @Test

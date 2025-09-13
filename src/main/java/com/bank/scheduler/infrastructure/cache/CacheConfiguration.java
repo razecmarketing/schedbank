@@ -13,33 +13,56 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Cache Configuration - High Performance Data Access
+ * 
+ * Caching Strategy:
+ * - Multi-tier caching for different data access patterns
+ * - TTL optimization based on business requirements  
+ * - Horizontal scaling support via Redis clustering
+ * - Graceful degradation on cache failures
+ * 
+ * Performance Design:
+ * - Account validation: High frequency, short TTL (5min)
+ * - Fee calculations: Medium frequency, longer TTL (15min) 
+ * - Exchange rates: Low frequency, extended TTL (1hour)
+ */
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
 
+    /**
+     * Redis Cache Manager with performance-optimized configuration
+     * 
+     * Features:
+     * - Separate cache regions for different access patterns
+     * - Reasonable defaults with business-specific overrides
+     * - JSON serialization for cross-platform compatibility
+     */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(30))
+            .entryTtl(Duration.ofMinutes(30))  // Sensible default
             .serializeValuesWith(RedisSerializationContext.SerializationPair
                 .fromSerializer(new GenericJackson2JsonRedisSerializer()))
-            .disableCachingNullValues();
-
+            .disableCachingNullValues(); // Prevent cache poisoning
+        
+        // Different cache strategies for different data types
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
         
-        // Cache for account validation - 5 minutes
+        // High-frequency, short-lived: Account validation results
         cacheConfigurations.put("accountValidation", defaultConfig
             .entryTtl(Duration.ofMinutes(5)));
         
-        // Cache for fee calculations - 15 minutes
+        // Medium-frequency, business-critical: Fee calculation results  
         cacheConfigurations.put("feeCalculations", defaultConfig
             .entryTtl(Duration.ofMinutes(15)));
         
-        // Cache for exchange rates - 1 hour
+        // Low-frequency, stable: Exchange rate data
         cacheConfigurations.put("exchangeRates", defaultConfig
             .entryTtl(Duration.ofHours(1)));
         
-        // Cache for user permissions - 10 minutes
+        // User perms cache - 10 minutes is plenty
         cacheConfigurations.put("userPermissions", defaultConfig
             .entryTtl(Duration.ofMinutes(10)));
 

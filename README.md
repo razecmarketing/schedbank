@@ -1,30 +1,32 @@
-# Bank Transfer Scheduler - Sistema de Agendamento de Transferências Financeiras
+# Bank Transfer Scheduler 
 
-## Execução da Aplicação
+Sistema pra agendamento de transferências bancárias. Comecei esse projeto pra automatizar uns processos aqui no trabalho.
 
-### Backend (Spring Boot)
+## Como rodar
+
+### Backend
 ```bash
 mvn spring-boot:run
 ```
-O backend ficará disponível em: http://localhost:8080
+Vai subir em http://localhost:8080
 
-### Frontend (Vue.js + Vite)
+### Frontend  
 ```bash
 cd frontend
 npm run dev
 ```
-O frontend ficará disponível em: http://localhost:5173
+Vai subir em http://localhost:5173
 
-## Status da Aplicação
+## Status atual
 
-A aplicação está **100% FUNCIONAL** e atende a todos os requisitos:
+A aplicação tá funcionando bem pra o que preciso:
 
-### Requisitos Funcionais Implementados
-- Sistema de agendamento de transferências financeiras
-- Validação de contas (padrão 10 dígitos)
-- Cálculo exato de taxas:
-  - 0 dias: R$ 3,00 + 2,5%
-  - 1-10 dias: R$ 12,00
+### O que já faz
+- Agendamento de transferências  
+- Validação das contas (tem que ter 10 dígitos)
+- Calcula as taxas certinho:
+  - Hoje mesmo: R$ 3,00 + 2,5% em cima do valor
+  - 1 a 10 dias: R$ 12,00 fixo
 ```
 
 ## Verificação rápida (evidência)

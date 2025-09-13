@@ -1,22 +1,48 @@
 package com.bank.scheduler.infrastructure.persistence.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.bank.scheduler.domain.entities.Transfer;
+import com.bank.scheduler.domain.valueobjects.AccountNumber;
+import com.bank.scheduler.domain.valueobjects.Money;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * JPA Transfer Entity - Persistence Layer
+ * 
+ * Handles database mapping and persistence concerns.
+ * Bridges between domain objects and database storage.
+ * 
+ * Performance optimization: Indexed fields for common queries.
+ */
 @Entity
-@Table(name = "transfers")
+@Table(name = "transfers", indexes = {
+    @Index(name = "idx_transfer_date", columnList = "transferDate"),
+    @Index(name = "idx_source_account", columnList = "sourceAccount"),
+    @Index(name = "idx_schedule_date", columnList = "scheduleDate")
+})
 public class TransferEntity {
+    
     @Id
     private UUID id;
+    
+    @Column(nullable = false, length = 10)
     private String sourceAccount;
+    
+    @Column(nullable = false, length = 10)  
     private String targetAccount;
+    
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
+    
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal fee;
+    
+    @Column(nullable = false)
     private LocalDate scheduleDate;
+    
+    @Column(nullable = false)
     private LocalDate transferDate;
 
     public UUID getId() { return id; }

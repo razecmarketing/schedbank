@@ -4,20 +4,52 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+/**
+ * Immutable Money value object with strict business constraints.
+ * 
+ * Core Properties:
+ * - Invariant: amount >= 0 (non-negativity)  
+ * - Invariant: scale = 2 decimal places (monetary precision)
+ * - Associative: (a + b) + c = a + (b + c)
+ * - Commutative: a + b = b + a
+ * - Identity: a + 0 = a
+ * 
+ * Design principles:
+ * - Framework independent business logic
+ * - Immutable to prevent accidental modifications
+ * - Fail-fast validation at construction time
+ */
 public final class Money {
     private static final int DECIMAL_PLACES = 2;
-    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN;
+    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN; // IEEE 754 standard
     private final BigDecimal amount;
 
+    /**
+     * Private constructor enforces business invariants.
+     * 
+     * Preconditions:
+     * - amount != null
+     * - amount >= 0
+     * 
+     * Postconditions: 
+     * - this.amount has exactly 2 decimal places
+     * - this.amount >= 0
+     */
     private Money(BigDecimal amount) {
         validatePreconditions(amount);
         this.amount = amount.setScale(DECIMAL_PLACES, ROUNDING_MODE);
     }
 
+    /**
+     * Factory method for clearer object creation.
+     */
     public static Money of(BigDecimal amount) {
         return new Money(amount);
     }
 
+    /**
+     * Zero Money constant - mathematical identity element.
+     */
     public static Money zero() {
         return new Money(BigDecimal.ZERO);
     }

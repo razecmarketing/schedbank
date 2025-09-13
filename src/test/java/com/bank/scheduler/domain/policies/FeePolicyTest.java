@@ -34,8 +34,9 @@ class FeePolicyTest {
         LocalDate transferDate = scheduleDate;
         Money fee = sameDayPolicy.calculateFee(transferAmount, scheduleDate, transferDate);
         
-        BigDecimal expected = new BigDecimal("28.00"); // 2.5% de 1000 + 3.00
+        BigDecimal expected = new BigDecimal("28.00"); // 2.5% de 1000 + 3.00 (base fee)
         assertEquals(0, fee.getAmount().compareTo(expected), "Same day fee should be 2.5% plus R$3.00");
+        // Math check: 1000 * 0.025 = 25, + 3 = 28. Correct.
     }
 
     @Test
