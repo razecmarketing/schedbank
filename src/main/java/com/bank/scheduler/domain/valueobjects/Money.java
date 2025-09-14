@@ -1,5 +1,7 @@
 package com.bank.scheduler.domain.valueobjects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -19,10 +21,20 @@ import java.util.Objects;
  * - Immutable to prevent accidental modifications
  * - Fail-fast validation at construction time
  */
+@Embeddable
 public final class Money {
     private static final int DECIMAL_PLACES = 2;
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN; // IEEE 754 standard
+    
+    @Column(name = "amount", precision = 19, scale = 2)
     private final BigDecimal amount;
+
+    /**
+     * Construtor padrão para JPA
+     */
+    protected Money() {
+        this.amount = null;
+    }
 
     /**
      * Private constructor enforces business invariants.

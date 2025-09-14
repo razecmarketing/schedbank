@@ -2,7 +2,7 @@
 # Validates all fee calculation policies according to business requirements
 # Author: Cesar (following Clean Architecture principles)
 
-Write-Host "🚀 Starting Financial Transfer API Test Suite..." -ForegroundColor Green
+Write-Host "Starting Financial Transfer API Test Suite..." -ForegroundColor Green
 Write-Host "Testing backend compliance with business fee calculation rules" -ForegroundColor Yellow
 Write-Host ""
 
@@ -33,14 +33,14 @@ function Test-Transfer {
         $actualFee = [decimal]$response.fee
         
         if ($actualFee -eq $ExpectedFee) {
-            Write-Host "✅ PASSED - Fee: R$ $actualFee (Expected: R$ $ExpectedFee)" -ForegroundColor Green
+            Write-Host "PASSED - Fee: R$ $actualFee (Expected: R$ $ExpectedFee)" -ForegroundColor Green
             $testResults += @{Status="PASSED"; Test=$TestName; Expected=$ExpectedFee; Actual=$actualFee}
         } else {
-            Write-Host "❌ FAILED - Fee: R$ $actualFee (Expected: R$ $ExpectedFee)" -ForegroundColor Red
+            Write-Host "FAILED - Fee: R$ $actualFee (Expected: R$ $ExpectedFee)" -ForegroundColor Red
             $testResults += @{Status="FAILED"; Test=$TestName; Expected=$ExpectedFee; Actual=$actualFee}
         }
     } catch {
-        Write-Host "❌ ERROR - $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "ERROR - $($_.Exception.Message)" -ForegroundColor Red
         $testResults += @{Status="ERROR"; Test=$TestName; Expected=$ExpectedFee; Actual="ERROR"}
     }
     Write-Host ""
@@ -66,14 +66,14 @@ function Test-ErrorScenario {
     
     try {
         $response = Invoke-RestMethod -Uri $baseUrl -Method POST -Body $body -ContentType "application/json"
-        Write-Host "❌ FAILED - Should have returned error but got: $($response | ConvertTo-Json)" -ForegroundColor Red
+        Write-Host "FAILED - Should have returned error but got: $($response | ConvertTo-Json)" -ForegroundColor Red
         $testResults += @{Status="FAILED"; Test=$TestName; Expected="400 Error"; Actual="Success"}
     } catch {
         if ($_.Exception.Response.StatusCode -eq 400) {
-            Write-Host "✅ PASSED - Correctly returned 400 Bad Request" -ForegroundColor Green
+            Write-Host "PASSED - Correctly returned 400 Bad Request" -ForegroundColor Green
             $testResults += @{Status="PASSED"; Test=$TestName; Expected="400 Error"; Actual="400 Error"}
         } else {
-            Write-Host "❌ FAILED - Wrong error code: $($_.Exception.Response.StatusCode)" -ForegroundColor Red
+            Write-Host "FAILED - Wrong error code: $($_.Exception.Response.StatusCode)" -ForegroundColor Red
             $testResults += @{Status="FAILED"; Test=$TestName; Expected="400 Error"; Actual="Wrong Error"}
         }
     }
@@ -111,10 +111,10 @@ Write-Host "Test 8: Data Persistence Validation" -ForegroundColor Cyan
 try {
     $transfers = Invoke-RestMethod -Uri $baseUrl -Method GET
     $transferCount = $transfers.Count
-    Write-Host "✅ PASSED - Retrieved $transferCount transfers from H2 database" -ForegroundColor Green
+    Write-Host "PASSED - Retrieved $transferCount transfers from H2 database" -ForegroundColor Green
     $testResults += @{Status="PASSED"; Test="Data Persistence"; Expected="6+ transfers"; Actual="$transferCount transfers"}
 } catch {
-    Write-Host "❌ FAILED - Could not retrieve transfers: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "FAILED - Could not retrieve transfers: $($_.Exception.Message)" -ForegroundColor Red
     $testResults += @{Status="FAILED"; Test="Data Persistence"; Expected="6+ transfers"; Actual="ERROR"}
 }
 
@@ -127,18 +127,18 @@ $failedTests = ($testResults | Where-Object {$_.Status -eq "FAILED"}).Count
 $errorTests = ($testResults | Where-Object {$_.Status -eq "ERROR"}).Count
 $totalTests = $testResults.Count
 
-Write-Host "📊 Total Tests: $totalTests" -ForegroundColor White
-Write-Host "✅ Passed: $passedTests" -ForegroundColor Green
-Write-Host "❌ Failed: $failedTests" -ForegroundColor Red
-Write-Host "⚠️  Errors: $errorTests" -ForegroundColor Yellow
+Write-Host "Total Tests: $totalTests" -ForegroundColor White
+Write-Host "Passed: $passedTests" -ForegroundColor Green
+Write-Host "Failed: $failedTests" -ForegroundColor Red
+Write-Host "Errors: $errorTests" -ForegroundColor Yellow
 
 if ($failedTests -eq 0 -and $errorTests -eq 0) {
     Write-Host ""
-    Write-Host "🏆 ALL TESTS PASSED! Backend is PRODUCTION READY!" -ForegroundColor Green -BackgroundColor Black
-    Write-Host "💎 Clean Architecture + Mathematical Precision + Business Rule Compliance = EXCELLENCE" -ForegroundColor Yellow
+    Write-Host "ALL TESTS PASSED! Backend is PRODUCTION READY!" -ForegroundColor Green -BackgroundColor Black
+    Write-Host "Clean Architecture + Mathematical Precision + Business Rule Compliance = EXCELLENCE" -ForegroundColor Yellow
 } else {
     Write-Host ""
-    Write-Host "⚠️  Some tests failed. Please review the results above." -ForegroundColor Yellow
+    Write-Host "Some tests failed. Please review the results above." -ForegroundColor Yellow
 }
 
 Write-Host ""

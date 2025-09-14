@@ -1,8 +1,8 @@
-# 🏦 Financial Transfer Scheduler System
+# Financial Transfer Scheduler System
 
 A enterprise-grade financial transfer scheduling system built with **Clean Architecture** principles, featuring mathematical precision and robust business rule validation.
 
-## 🏆 Architecture Excellence
+## Architecture Excellence
 
 This project demonstrates **professional software engineering practices**:
 
@@ -12,7 +12,7 @@ This project demonstrates **professional software engineering practices**:
 - **Comprehensive Testing**: 100% business rule coverage
 - **Production Ready**: Enterprise-level error handling and validation
 
-## 📋 Business Requirements Implementation
+## Business Requirements Implementation
 
 ### Fee Calculation Engine
 The system implements a sophisticated fee calculation engine with the following business rules:
@@ -25,9 +25,9 @@ The system implements a sophisticated fee calculation engine with the following 
 | 21-30 days     | R$ 0,00   | 6.9%      | amount × 0.069 |
 | 31-40 days     | R$ 0,00   | 4.7%      | amount × 0.047 |
 | 41-50 days     | R$ 0,00   | 1.7%      | amount × 0.017 |
-| > 50 days      | ❌ Not Allowed | ❌ | Business Rule Violation |
+| > 50 days      | Not Allowed | Not Allowed           | Business Rule Violation |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Java 17 (OpenJDK recommended)
@@ -51,7 +51,7 @@ npm run dev
 **Client**: http://localhost:5173
 ```
 
-## ✅ Backend Validation (Production Evidence)
+## Backend Validation (Production Evidence)
 
 ### Automated Test Suite
 ```bash
@@ -79,14 +79,14 @@ curl http://localhost:8080/api/transfers
 ```
 
 ### Test Results Summary
-🏆 **ALL TESTS PASSING** - See [Backend Testing Documentation](docs/BACKEND_TESTING.md)
+**ALL TESTS PASSING** - See [Backend Testing Documentation](docs/BACKEND_TESTING.md)
 
-- ✅ **7 Business Rule Tests**: All fee calculations mathematically verified
-- ✅ **Error Handling**: Invalid scenarios properly rejected
-- ✅ **Data Persistence**: H2 database integration working
-- ✅ **REST API Compliance**: HTTP standards followed
+- **7 Business Rule Tests**: All fee calculations mathematically verified
+- **Error Handling**: Invalid scenarios properly rejected
+- **Data Persistence**: H2 database integration working
+- **REST API Compliance**: HTTP standards followed
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### Backend Stack
 - **Framework**: Spring Boot 3.2.5
@@ -113,13 +113,13 @@ curl http://localhost:8080/api/transfers
 - **Security**: Input validation + CORS configuration
 - **Maintainability**: Self-documenting code + comprehensive tests
 
-## 📚 Documentation
+## Documentation
 
 - [Backend Testing Results](docs/BACKEND_TESTING.md)
 - [Architecture Decisions](docs/architecture.md)
 - [API Specification](docs/api-spec.md) *(if needed)*
 
-## 🔧 Development Commands
+## Development Commands
 
 ```bash
 # Backend development
@@ -134,7 +134,7 @@ npm run build                   # Production build
 npm run test                    # Run tests
 ```
 
-## 🚀 Deployment Ready
+## Deployment Ready
 
 The application is **production-ready** with:
 - Docker support

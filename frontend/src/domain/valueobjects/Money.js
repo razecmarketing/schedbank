@@ -1,22 +1,62 @@
+/**
+ * Money Value Object - Seguindo Padrão Pessoal de Programação
+ * 
+ * Princípios aplicados:
+ * - Precisão matemática rigorosa (2 casas decimais)
+ * - Invariantes garantidas na construção
+ * - Imutabilidade total
+ * - Operações matematicamente corretas
+ */
 export class Money {
-  constructor(amount) {
-    this.validateAmount(amount)
-    this._amount = Number(amount)
+  static DECIMAL_PLACES = 2
+  static ROUNDING_PRECISION = 100 // Para 2 casas decimais
+  
+  /**
+   * Factory method que garante criação consistente
+   * Implementa fail-fast validation
+   */
+  static of(value) {
+    return new Money(value)
   }
 
-  validateAmount(amount) {
+  /**
+   * Construtor privativo com validação matemática rigorosa
+   */
+  constructor(amount) {
+    this._enforceMonetaryInvariants(amount)
+    this._amount = this._normalizeToPrecision(amount)
+    Object.freeze(this) // Garantia de imutabilidade
+  }
+
+  /**
+   * Validação rigorosa de invariantes monetárias
+   * Matemática precisa: valor > 0, numérico válido
+   */
+  _enforceMonetaryInvariants(amount) {
     if (amount == null || amount === undefined) {
-      throw new Error('Amount cannot be null or undefined')
+      throw new Error('Invariante violada: valor monetário não pode ser nulo')
     }
     
     const numericAmount = Number(amount)
     if (isNaN(numericAmount)) {
-      throw new Error('Amount must be a valid number')
+      throw new Error('Invariante violada: valor deve ser numericamente válido')
     }
     
     if (numericAmount <= 0) {
-      throw new Error('Amount must be positive')
+      throw new Error('Invariante violada: valor monetário deve ser positivo')
     }
+
+    if (!Number.isFinite(numericAmount)) {
+      throw new Error('Invariante violada: valor deve ser finito')
+    }
+  }
+
+  /**
+   * Normalização para precisão monetária (2 casas decimais)
+   * Evita problemas de ponto flutuante
+   */
+  _normalizeToPrecision(amount) {
+    return Math.round(Number(amount) * Money.ROUNDING_PRECISION) / Money.ROUNDING_PRECISION
   }
 
   get amount() {

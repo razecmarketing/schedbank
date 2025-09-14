@@ -1,0 +1,32 @@
+Entregáveis
+Aplicação + pequena documentação no README explicando suas decisões arquiteturais, versões de
+linguagem, ferramentas utilizadas e instruções para a subida do projeto.
+É obrigatório a criação de um projeto no seu Github para que vejamos os passos feitos através dos
+commits.
+
+Avaliação
+Desenvolver tanto a API quanto o front-end (Spring boot e VueJs no front). Utilizar a versão 17 do java.
+O objetivo dessa tarefa é avaliar como você vai desenvolver o código em termos de estilo, eficiência,
+qualidade e prazo de entrega.
+A tarefa é a seguinte:
+Desenvolver um sistema de agendamento de transferências financeiras.
+O usuário deve poder agendar uma transferência financeira com as seguintes informações:
+1. Conta de origem (padrão XXXXXXXXXX), conta de destino (padrão XXXXXXXXXX), valor da
+transferência, taxa (a ser calculada conforme tabela abaixo), data da transferência (data em
+que será realizada a transferência) e data de agendamento (hoje);
+2. O cálculo da taxa sobre o valor a ser transferido depende da data de transferência como
+segue:
+
+Dias Transferência
+R$ Taxa De Até
+0 0 3,00 2,5%
+1 10 12,00 0,0%
+11 20 0,00 8,2%
+21 30 0,00 6,9%
+31 40 0,00 4,7%
+41 50 0,00 1,7%
+
+Observação: Caso não haja taxa aplicável, lançar um alerta sobre o erro e não permitir
+tranferência.
+3. O usuário deve poder ver o extrato de todos os agendamentos cadastrados.
+Nota: A persistência deve ser feita em banco de dados em memória (h2, por exemplo).

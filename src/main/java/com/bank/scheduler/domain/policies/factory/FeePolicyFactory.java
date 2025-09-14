@@ -25,11 +25,11 @@ public final class FeePolicyFactory {
     // Policy registry for easy management and extension
     private static final List<FeePolicy> POLICIES = List.of(
         new SameDayFeePolicy(),
-        new ShortTermFeePolicy(),    // 1-10 days
-        new MediumTermFeePolicy(),   // 11-20 days  
-        new LongTermFeePolicy(),     // 21-30 days
-        new ExtendedTermFeePolicy(), // 31-40 days
-        new MaxTermFeePolicy()       // 41-50 days
+        new TenDaysFeePolicy(),                    // 1-10 days
+        new ElevenToTwentyDaysFeePolicy(),        // 11-20 days  
+        new TwentyOneToThirtyDaysFeePolicy(),     // 21-30 days
+        new ThirtyOneToFortyDaysFeePolicy(),      // 31-40 days
+        new FortyOneToFiftyDaysFeePolicy()        // 41-50 days
     );
     
     /**

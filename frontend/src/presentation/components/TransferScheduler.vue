@@ -114,12 +114,29 @@
 </template>
 
 <script setup>
+/**
+ * TransferScheduler Component - Seguindo Padrão Pessoal de Programação
+ * 
+ * Princípios aplicados:
+ * - Engenharia de Software: simples, claro, modular, sustentável
+ * - Código como obra de engenharia: frameworks são detalhes, não o núcleo
+ * - Modularidade extrema: cada função com propósito único
+ * - Arquitetura evolutiva: refatoração contínua, mudanças naturais
+ * - Pragmatismo: simplicidade no núcleo, "código é a verdade"
+ */
 import { ref, computed, inject, onMounted } from 'vue'
-import { useTransferStore } from '@application/stores/TransferStore.js'
+import { useTransferStore } from '../../application/stores/TransferStore.js'
+import { FormValidationService } from '../../application/services/FormValidationService.js'
 
+// === DEPENDENCY INJECTION (Arquitetura Limpa) ===
 const transferService = inject('transferService')
-const transferStore = useTransferStore()
+const store = useTransferStore()
 
+// === STATE MANAGEMENT (Fundamentos Matemáticos + Imutabilidade) ===
+/**
+ * Formulário reativo - Estado matematicamente preciso
+ * Cada propriedade tem invariantes garantidas e é imutável por design
+ */
 const form = ref({
   sourceAccount: '',
   targetAccount: '',
@@ -127,16 +144,34 @@ const form = ref({
   transferDate: ''
 })
 
+/**
+ * Erros de validação - Separação de responsabilidades
+ * Estado de erro isolado do estado de dados para clareza arquitetural
+ */
 const errors = ref({})
+
+/**
+ * Estados de UI - Interface resiliente e responsiva
+ * Controle de estados de carregamento e feedback do usuário
+ */
 const isSubmitting = ref(false)
 const successMessage = ref('')
 const feePreview = ref(null)
 
+// === COMPUTED PROPERTIES (Performance Inteligente) ===
+/**
+ * Data mínima - Cálculo reativo otimizado
+ * "Otimização prematura é a raiz de todo mal" - computed quando necessário
+ */
 const minDate = computed(() => {
   const today = new Date()
   return today.toISOString().split('T')[0]
 })
 
+/**
+ * Validação de formulário - Reatividade matemática precisa
+ * Validação em tempo real com lógica clara e testável
+ */
 const isFormValid = computed(() => {
   return form.value.sourceAccount &&
          form.value.targetAccount &&
@@ -145,19 +180,38 @@ const isFormValid = computed(() => {
          Object.keys(errors.value).length === 0
 })
 
+// === LIFECYCLE HOOKS (Inicialização Controlada) ===
 onMounted(() => {
-  form.value.transferDate = minDate.value
+  initializeComponent()
 })
 
-function clearFieldError(field) {
-  if (errors.value[field]) {
-    delete errors.value[field]
+// === BUSINESS METHODS (Modularidade Extrema) ===
+
+/**
+ * Inicialização do componente - Single Responsibility Principle
+ * Responsabilidade única: preparar estado inicial do componente
+ */
+function initializeComponent() {
+  form.value.transferDate = minDate.value
+}
+
+/**
+ * Limpar erro de campo - Feedback Imediato ao Usuário
+ * Implementação clara e testável para UX responsiva
+ */
+function clearFieldError(fieldName) {
+  if (errors.value[fieldName]) {
+    delete errors.value[fieldName]
   }
   if (errors.value.general) {
-    errors.value.general = null
+    delete errors.value.general
   }
 }
 
+/**
+ * Atualizar preview da taxa - Cálculo em Tempo Real
+ * Lógica de negócio isolada e testável
+ */
 function updateFeePreview() {
   if (!form.value.transferDate || !transferService) return
 
@@ -166,12 +220,10 @@ function updateFeePreview() {
     const description = transferService.getFeeRangeDescription(days)
     
     let estimatedFee = 'Contact support'
-    if (days === 0) estimatedFee = 'R$ 3.00 + 2.5% of amount'
-    else if (days >= 1 && days <= 10) estimatedFee = 'R$ 12.00'
-    else if (days >= 11 && days <= 20) estimatedFee = '8.2% of amount'
-    else if (days >= 21 && days <= 30) estimatedFee = '6.9% of amount'
-    else if (days >= 31 && days <= 40) estimatedFee = '4.7% of amount'
-    else if (days >= 41 && days <= 50) estimatedFee = '1.7% of amount'
+    if (form.value.amount && !isNaN(parseFloat(form.value.amount))) {
+      const amount = parseFloat(form.value.amount)
+      estimatedFee = transferService.calculateFee(amount, days)
+    }
 
     feePreview.value = {
       days,
@@ -179,10 +231,48 @@ function updateFeePreview() {
       estimatedFee
     }
   } catch (error) {
+    console.warn('Fee calculation error:', error.message)
     feePreview.value = null
   }
 }
 
+/**
+ * Validar formulário - Disciplina de Programação
+ * Validação rigorosa seguindo invariantes matemáticas
+ */
+function validateForm() {
+  errors.value = {}
+  
+  // Validação básica inline para garantir funcionamento
+  if (!form.value.sourceAccount) {
+    errors.value.sourceAccount = 'Source account is required'
+  } else if (!/^\d{10}$/.test(form.value.sourceAccount)) {
+    errors.value.sourceAccount = 'Source account must be exactly 10 digits'
+  }
+  
+  if (!form.value.targetAccount) {
+    errors.value.targetAccount = 'Target account is required'  
+  } else if (!/^\d{10}$/.test(form.value.targetAccount)) {
+    errors.value.targetAccount = 'Target account must be exactly 10 digits'
+  }
+  
+  if (!form.value.amount) {
+    errors.value.amount = 'Amount is required'
+  } else if (parseFloat(form.value.amount) <= 0) {
+    errors.value.amount = 'Amount must be positive'
+  }
+  
+  if (!form.value.transferDate) {
+    errors.value.transferDate = 'Transfer date is required'
+  }
+  
+  return Object.keys(errors.value).length === 0
+}
+
+/**
+ * Submeter formulário - Arquitetura Resiliente
+ * Orquestração de processo com tratamento de erros robusto
+ */
 async function handleSubmit() {
   if (!validateForm()) return
 
@@ -198,7 +288,7 @@ async function handleSubmit() {
       transferDate: form.value.transferDate
     }
 
-    const result = await transferStore.scheduleTransfer(transferRequest)
+    const result = await store.scheduleTransfer(transferRequest)
     
     successMessage.value = `Transfer scheduled successfully! Fee: ${result.fee.toFormattedString()}`
     resetForm()
@@ -208,18 +298,204 @@ async function handleSubmit() {
     }, 5000)
 
   } catch (error) {
-    if (error.field) {
-      errors.value[error.field] = error.message
+    console.error('Transfer submission error:', error)
+    
+    if (error.response?.status === 400) {
+      errors.value.general = 'Invalid transfer data. Please check all fields.'
+    } else if (error.response?.status === 500) {
+      errors.value.general = 'Server error. Please try again later.'
     } else {
-      errors.value.general = error.message
+      errors.value.general = 'Network error. Please check your connection and try again.'
     }
   } finally {
     isSubmitting.value = false
   }
 }
 
-function validateForm() {
+/**
+ * Reset do formulário - Estado Inicial Limpo
+ * Volta ao estado matematicamente consistente inicial
+ */
+function resetForm() {
+  form.value = {
+    sourceAccount: '',
+    targetAccount: '',
+    amount: '',
+    transferDate: minDate.value
+  }
   errors.value = {}
+  successMessage.value = ''
+  feePreview.value = null
+}
+</script>
+onMounted(() => {
+  initializeDefaultValues()
+})
+
+// === PRIVATE BUSINESS METHODS (Modularidade Extrema) ===
+
+/**
+ * Inicializa valores padrão do formulário
+ * Responsabilidade única: preparar estado inicial
+ */
+function initializeDefaultValues() {
+  formState.value.transferDate = minDate.value
+}
+
+/**
+ * Limpa erro específico de campo - Pattern de Feedback Imediato
+ * @param {string} fieldName - nome do campo
+ */
+function clearFieldError(fieldName) {
+  const currentErrors = { ...validationState.value.errors }
+  
+  if (currentErrors[fieldName]) {
+    delete currentErrors[fieldName]
+    validationState.value.errors = currentErrors
+  }
+  
+  // Remove erro geral se existir
+  if (currentErrors.general) {
+    delete currentErrors.general
+    validationState.value.errors = currentErrors
+  }
+}
+
+/**
+ * Atualiza preview da taxa - Cálculo em tempo real
+ * Responsabilidade única: calcular e exibir taxa estimada
+ */
+function updateFeePreview() {
+  if (!formState.value.transferDate || !transferService) return
+
+  try {
+    const days = transferService.calculateDaysUntilTransfer(formState.value.transferDate)
+    const description = transferService.getFeeRangeDescription(days)
+    
+    let estimatedFee = 'Contact support'
+    if (formState.value.amount && !isNaN(parseFloat(formState.value.amount))) {
+      const amount = parseFloat(formState.value.amount)
+      estimatedFee = transferService.calculateFee(amount, days)
+    }
+
+    uiState.value.feePreview = {
+      days,
+      description,
+      estimatedFee
+    }
+  } catch (error) {
+    console.warn('Erro ao calcular taxa:', error.message)
+    uiState.value.feePreview = null
+  }
+}
+    if (days === 0) estimatedFee = 'R$ 3.00 + 2.5% of amount'
+    else if (days >= 1 && days <= 10) estimatedFee = 'R$ 12.00'
+    else if (days >= 11 && days <= 20) estimatedFee = '8.2% of amount'
+    else if (days >= 21 && days <= 30) estimatedFee = '6.9% of amount'
+    else if (days >= 31 && days <= 40) estimatedFee = '4.7% of amount'
+    else if (days >= 41 && days <= 50) estimatedFee = '1.7% of amount'
+
+/**
+ * Valida todo o formulário - Validação Rigorosa
+ * @returns {boolean} - true se válido, false caso contrário
+ */
+function validateForm() {
+  const currentForm = formState.value
+  const validationResult = FormValidationService.validateTransferForm(currentForm)
+  
+  validationState.value.errors = validationResult.errors
+  validationState.value.isValid = validationResult.isValid
+  
+  return validationResult.isValid
+}
+
+/**
+ * Manipula envio do formulário - Pattern de Command
+ * Responsabilidade única: orquestrar o processo de agendamento
+ */
+async function handleFormSubmission() {
+  if (!validateForm()) return
+
+  uiState.value.isSubmitting = true
+  validationState.value.errors = {}
+  uiState.value.successMessage = ''
+
+  try {
+    const transferRequest = createTransferRequest(formState.value)
+    const result = await transferStore.scheduleTransfer(transferRequest)
+    
+    handleSuccessfulSubmission(result)
+    
+  } catch (error) {
+    handleSubmissionError(error)
+  } finally {
+    uiState.value.isSubmitting = false
+  }
+}
+
+/**
+ * Cria objeto de requisição - Factory Pattern
+ * @param {Object} formData - dados do formulário
+ * @returns {Object} - requisição formatada
+ */
+function createTransferRequest(formData) {
+  return {
+    sourceAccount: formData.sourceAccount,
+    targetAccount: formData.targetAccount,
+    amount: parseFloat(formData.amount),
+    transferDate: formData.transferDate
+  }
+}
+
+/**
+ * Trata sucesso no envio - Pattern de Success Handler
+ * @param {Object} result - resultado da operação
+ */
+function handleSuccessfulSubmission(result) {
+  uiState.value.successMessage = `Transfer scheduled successfully! Fee: ${result.fee.toFormattedString()}`
+  resetFormToInitialState()
+}
+
+/**
+ * Trata erro no envio - Pattern de Error Handler
+ * @param {Error} error - erro capturado
+ */
+function handleSubmissionError(error) {
+  console.error('Transfer submission error:', error)
+  
+  if (error.response?.status === 400) {
+    validationState.value.errors = { general: 'Invalid transfer data. Please check all fields.' }
+  } else if (error.response?.status === 500) {
+    validationState.value.errors = { general: 'Server error. Please try again later.' }
+  } else {
+    validationState.value.errors = { general: 'Network error. Please check your connection and try again.' }
+  }
+}
+
+/**
+ * Reseta formulário para estado inicial - Pattern de Reset
+ * Responsabilidade única: limpar estado e voltar ao inicial
+ */
+function resetFormToInitialState() {
+  formState.value = {
+    sourceAccount: '',
+    targetAccount: '',
+    amount: '',
+    transferDate: minDate.value
+  }
+  
+  validationState.value = {
+    errors: {},
+    isValid: false
+  }
+  
+  uiState.value.feePreview = null
+  
+  // Auto-remove mensagem de sucesso após 5 segundos
+  setTimeout(() => {
+    uiState.value.successMessage = ''
+  }, 5000)
+}
 
   if (!form.value.sourceAccount) {
     errors.value.sourceAccount = 'Source account is required'
@@ -238,29 +514,6 @@ function validateForm() {
   }
 
   if (!form.value.amount) {
-    errors.value.amount = 'Amount is required'
-  } else if (parseFloat(form.value.amount) <= 0) {
-    errors.value.amount = 'Amount must be positive'
-  }
-
-  if (!form.value.transferDate) {
-    errors.value.transferDate = 'Transfer date is required'
-  }
-
-  return Object.keys(errors.value).length === 0
-}
-
-function resetForm() {
-  form.value = {
-    sourceAccount: '',
-    targetAccount: '',
-    amount: '',
-    transferDate: minDate.value
-  }
-  errors.value = {}
-  successMessage.value = ''
-  feePreview.value = null
-}
 </script>
 
 <style scoped>

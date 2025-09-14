@@ -1,11 +1,21 @@
 package com.bank.scheduler.domain.valueobjects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Embeddable
 public final class AccountNumber {
     private static final Pattern ACCOUNT_PATTERN = Pattern.compile("^\\d{10}$");
+    
+    @Column(name = "value", length = 10)
     private final String value;
+
+    // Construtor padrão para JPA
+    protected AccountNumber() {
+        this.value = null;
+    }
 
     private AccountNumber(String value) {
         validateInvariant(value);
