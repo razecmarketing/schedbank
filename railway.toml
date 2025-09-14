@@ -1,0 +1,16 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "schedbank-api"
+source = "."
+
+[services.variables]
+SPRING_PROFILES_ACTIVE = "prod"
+PORT = "8080"
+FRONTEND_URL = "https://schedbank.vercel.app"

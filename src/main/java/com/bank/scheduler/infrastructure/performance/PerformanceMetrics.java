@@ -4,6 +4,7 @@ import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Component;
 
@@ -51,14 +52,6 @@ public class PerformanceMetrics {
         // Financial metrics
         this.totalTransferAmount = new AtomicLong(0);
         this.totalFeeAmount = new LongAdder();
-        
-        Gauge.builder("transfers.amount.total")
-            .description("Total amount of all transfers")
-            .register(meterRegistry, this, metrics -> metrics.totalTransferAmount.get());
-            
-        Gauge.builder("transfers.fees.total")
-            .description("Total fees collected")
-            .register(meterRegistry, this, metrics -> metrics.totalFeeAmount.sum());
     }
     
     /**
@@ -76,19 +69,14 @@ public class PerformanceMetrics {
      * Records transfer scheduling failure for error rate monitoring.
      */
     public void recordTransferFailed(String errorType) {
-        transfersFailed.increment(
-            "error.type", errorType
-        );
+        transfersFailed.increment();
     }
     
     /**
      * Records fee policy application for business analytics.
      */
     public void recordPolicyApplication(String policyType, int dayRange) {
-        policyApplications.increment(
-            "policy.type", policyType,
-            "day.range", String.valueOf(dayRange)
-        );
+        policyApplications.increment();
     }
     
     /**

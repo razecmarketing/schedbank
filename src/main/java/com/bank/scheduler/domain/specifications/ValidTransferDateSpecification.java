@@ -3,10 +3,9 @@ package com.bank.scheduler.domain.specifications;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public final class ValidTransferDateSpecification implements TransferSpecification {
+public final class ValidTransferDateSpecification {
     private static final int MAX_SCHEDULE_DAYS = 50;
     
-    @Override
     public boolean isSatisfiedBy(LocalDate scheduleDate, LocalDate transferDate) {
         if (transferDate == null || scheduleDate == null) {
             return false;

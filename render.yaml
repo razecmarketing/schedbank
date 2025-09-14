@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: schedbank-api
+    runtime: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://schedbank.vercel.app
+    healthCheckPath: /actuator/health
+
+databases:
+  - name: schedbank-db
+    databaseName: schedbank
+    user: schedbank_user
+    plan: free
+
+# Optional: Background jobs or workers can be added here
+# - type: worker
+#   name: schedbank-worker
+#   env: java
+#   buildCommand: "./mvnw clean package -DskipTests"
+#   startCommand: "java -jar target/bank-scheduler-*.jar --spring.profiles.active=worker"

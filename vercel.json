@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "name": "schedbank",
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "frontend/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "buildCommand": "cd frontend && npm ci && npm run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vue",
+  "env": {
+    "VITE_API_BASE_URL": "@vite_api_base_url"
+  },
+  "build": {
+    "env": {
+      "VITE_API_BASE_URL": "@vite_api_base_url"
+    }
+  }
+}
