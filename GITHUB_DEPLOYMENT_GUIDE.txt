@@ -1,0 +1,369 @@
+# GUIA DE DEPLOYMENT NO GITHUB - NIVEL SENIOR
+# Sistema de Agendamento de Transferências Bancárias
+# Seguindo Clean Architecture e SOLID Principles
+
+## FASE 1: PREPARAÇÃO DO REPOSITÓRIO
+
+### 1.1 Criação do Repositório
+- Nome: bank-transfer-scheduler
+- Descrição: "Clean Architecture implementation for bank transfer scheduling system with Java 17 + Spring Boot backend and Vue.js 3 frontend"
+- Público: Sim (para demonstrar qualidade técnica)
+- Inicializar com: README.md, .gitignore (Java + Node)
+
+### 1.2 Estrutura Inicial de Branches
+```
+main (produção)
+├── develop (integração)
+├── feature/domain-layer
+├── feature/application-layer
+├── feature/infrastructure-layer
+├── feature/presentation-layer
+└── feature/vue-frontend
+```
+
+### 1.3 Configuração de .gitignore (adicionar ao existente)
+```
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+dist/
+build/
+out/
+```
+
+## FASE 2: SEQUÊNCIA DE COMMITS PROFISSIONAL
+
+### 2.1 Foundation Commits (Branch: develop)
+```
+Commit 1: "docs: add comprehensive project documentation"
+- README.md com arquitetura, stack tecnológico, decisões
+- docs/architecture.md
+- docs/decisions.md (ADRs)
+- docs/testing.md
+
+Commit 2: "build: configure maven with clean architecture structure"
+- pom.xml com dependências organizadas por camada
+- Maven profiles para diferentes ambientes
+- Jacoco para coverage
+
+Commit 3: "feat: implement domain entities following DDD principles"
+- Transfer entity com invariantes de negócio
+- Value Objects: Money, AccountNumber
+- Domain exceptions
+
+Commit 4: "test: add comprehensive domain layer tests"
+- TransferTest com casos de borda
+- Value objects tests
+- Testes de invariantes de domínio
+```
+
+### 2.2 Core Business Logic (Branch: feature/domain-layer)
+```
+Commit 5: "feat: implement fee policy strategy pattern"
+- Interface FeePolicy
+- Implementações por faixa de dias
+- Factory pattern para seleção
+
+Commit 6: "test: add fee calculation policy tests"
+- Testes para cada política
+- Casos de borda e validações
+- Property-based testing
+
+Commit 7: "refactor: extract fee calculation rules to separate policies"
+- Single Responsibility aplicado
+- Open/Closed principle demonstrado
+- Dependency Inversion com interfaces
+```
+
+### 2.3 Application Layer (Branch: feature/application-layer)
+```
+Commit 8: "feat: implement transfer scheduling use case"
+- TransferSchedulerService
+- Orquestração sem dependências de infraestrutura
+- Business rules enforcement
+
+Commit 9: "test: add use case integration tests"
+- Mocking de infraestrutura
+- Happy path e error scenarios
+- Business rule validation tests
+
+Commit 10: "feat: add domain repository contracts"
+- TransferRepository interface
+- Query specifications
+- Port/Adapter pattern
+```
+
+### 2.4 Infrastructure Layer (Branch: feature/infrastructure-layer)
+```
+Commit 11: "feat: implement JPA repository adapters"
+- TransferRepositoryImpl
+- Entity mapping
+- Database configuration
+
+Commit 12: "feat: configure H2 database with proper schema"
+- schema.sql
+- data.sql para testes
+- Flyway migrations
+
+Commit 13: "feat: add REST API controllers with proper DTOs"
+- TransferController
+- Request/Response DTOs
+- Error handling global
+```
+
+### 2.5 Presentation Layer Enhancement
+```
+Commit 14: "feat: implement comprehensive error handling"
+- Global exception handler
+- Proper HTTP status codes
+- Client-friendly error messages
+
+Commit 15: "feat: add API documentation with OpenAPI"
+- Swagger configuration
+- Endpoint documentation
+- DTO schemas
+
+Commit 16: "test: add controller integration tests"
+- MockMvc tests
+- JSON serialization tests
+- HTTP status validation
+```
+
+### 2.6 Frontend Implementation (Branch: feature/vue-frontend)
+```
+Commit 17: "feat: initialize Vue.js project with clean architecture"
+- Vite configuration
+- Project structure mirroring backend
+- TypeScript configuration
+
+Commit 18: "feat: implement domain layer in frontend"
+- Transfer entity
+- Value objects (Money, AccountNumber)
+- Domain validations
+
+Commit 19: "feat: add Pinia store with application services"
+- State management
+- HTTP client abstraction
+- Error handling
+
+Commit 20: "feat: implement transfer scheduling UI"
+- Component composition
+- Form validation
+- Fee calculation display
+
+Commit 21: "feat: add transfer listing and management"
+- List view with filters
+- Delete functionality
+- Responsive design
+
+Commit 22: "test: add frontend unit tests"
+- Domain logic tests
+- Component tests
+- Store tests
+```
+
+### 2.7 Quality & Performance (Multiple branches)
+```
+Commit 23: "perf: optimize database queries with JPA projections"
+- Query optimization
+- N+1 problem resolution
+- Performance metrics
+
+Commit 24: "security: implement input validation and CORS"
+- Bean validation
+- CORS configuration
+- XSS protection
+
+Commit 25: "feat: add comprehensive logging and monitoring"
+- Structured logging
+- Performance metrics
+- Error tracking
+
+Commit 26: "docs: update documentation with deployment guide"
+- Docker configuration
+- Environment setup
+- Troubleshooting guide
+```
+
+## FASE 3: PULL REQUEST STRATEGY
+
+### 3.1 Template de PR
+```markdown
+## Objective
+Brief description of what this PR accomplishes
+
+## Architecture Impact
+- Which layers are affected
+- Design patterns used
+- SOLID principles applied
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests passing
+- [ ] Manual testing completed
+
+## Documentation
+- [ ] Code is self-documenting
+- [ ] Architecture docs updated
+- [ ] README updated if needed
+
+## Code Quality
+- [ ] No code duplication
+- [ ] Clean Code principles followed
+- [ ] Performance implications considered
+```
+
+### 3.2 Sequence de Merges
+1. feature/domain-layer → develop
+2. feature/application-layer → develop  
+3. feature/infrastructure-layer → develop
+4. feature/presentation-layer → develop
+5. feature/vue-frontend → develop
+6. develop → main (release)
+
+## FASE 4: RELEASE MANAGEMENT
+
+### 4.1 Semantic Versioning
+```
+v0.1.0 - Domain layer implementation
+v0.2.0 - Application layer complete
+v0.3.0 - Infrastructure layer ready
+v0.4.0 - REST API complete
+v1.0.0 - MVP with frontend
+v1.1.0 - Enhanced UI/UX
+v1.2.0 - Performance optimizations
+```
+
+### 4.2 Release Notes Format
+```markdown
+# Release v1.0.0 - MVP Complete
+
+## New Features
+- Complete transfer scheduling system
+- Clean Architecture implementation
+- Vue.js responsive frontend
+
+## Architecture Highlights
+- SOLID principles throughout
+- Strategy pattern for fee policies
+- Repository pattern for data access
+
+## Quality Metrics
+- 95% code coverage
+- Zero code duplication
+- All SOLID principles applied
+
+## Technical Stack
+- Java 17 + Spring Boot 3.0
+- Vue.js 3 + Composition API
+- H2 Database + JPA
+- Maven + Vite build tools
+```
+
+## FASE 5: DOCUMENTAÇÃO SENIOR-LEVEL
+
+### 5.1 README.md Estrutura
+```markdown
+# Bank Transfer Scheduler
+
+## Architecture Decision Records
+
+### Clean Architecture Choice
+Business rules independent of frameworks, following Uncle Bob principles.
+
+### Technology Stack Rationale
+Each technology chosen for specific architectural benefits.
+
+### Performance Considerations
+Scalability patterns and optimization strategies.
+
+## Quick Start
+Step-by-step setup for developers
+
+## API Documentation
+OpenAPI/Swagger integration
+
+## Contributing Guidelines
+Code standards and review process
+```
+
+### 5.2 Arquivos de Documentação
+- docs/architecture.md - Diagrama de camadas, fluxo de dependências
+- docs/decisions.md - ADRs com justificativas técnicas
+- docs/testing.md - Estratégia de testes e coverage
+- docs/deployment.md - Guia de produção
+- CONTRIBUTING.md - Padrões de código e processo
+
+## FASE 6: DEMONSTRAÇÃO DE SENIORITY
+
+### 6.1 Evidências nos Commits
+- Mensagens descritivas com contexto
+- Refactoring commits mostrando evolução
+- Performance improvements com métricas
+- Security considerations
+- Backward compatibility maintenance
+
+### 6.2 Code Review Culture
+- Self-review em PRs
+- Comentários técnicos construtivos
+- Links para documentação relevante
+- Considerações de arquitetura
+
+### 6.3 Continuous Improvement
+- Commits de refactoring periódicos
+- Dependency updates com changelog
+- Performance profiling results
+- Security audit results
+
+## COMANDOS PRÁTICOS
+
+### Setup Inicial
+```bash
+git init
+git remote add origin https://github.com/username/bank-transfer-scheduler.git
+git checkout -b develop
+git add .
+git commit -m "feat: initial project structure with clean architecture"
+git push -u origin develop
+```
+
+### Workflow de Feature
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/domain-layer
+# ... desenvolvimento ...
+git add .
+git commit -m "feat: implement transfer entity with domain validations"
+git push -u origin feature/domain-layer
+# ... create PR via GitHub ...
+```
+
+### Release Process
+```bash
+git checkout develop
+git pull origin develop
+git checkout main
+git merge develop
+git tag v1.0.0
+git push origin main --tags
+```
+
+Este guia demonstra maturidade técnica através de:
+- Planejamento arquitetural sólido
+- Processo de desenvolvimento estruturado
+- Evidência de conhecimento em Clean Code
+- Estratégia de versionamento profissional
+- Documentação completa e justificada

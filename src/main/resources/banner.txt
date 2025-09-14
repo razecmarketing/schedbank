@@ -1,0 +1,24 @@
+/*
+ * ASCII art banner for the Sched_Banck_Beta application.
+ * This banner is displayed on application startup and includes stylized text
+ * representing the application's name and version information.
+ * 
+ * Location: src/main/resources/banner.txt
+ */
+
+      _____       _              _   ____              _    
+     / ____|     | |            | | |  _ \            | |   
+    | (___   ___ | |__   ___  __| | | |_) | __ _ _ __ | | __
+     \___ \ / __|| '_ \ / _ \/ _` | |  _ < / _` | '_ \| |/ /
+     ____) | (__ | | | |  __/ (_| | | |_) | (_| | | | |   < 
+    |_____/ \___||_| |_|\___|\__,_| |____/ \__,_|_| |_|_|\_\
+                                 
+     ____        _        
+    |  _ \      | |       
+    | |_) | ___ | |_ __ _ 
+    |  _ < / _ \| __/ _` |
+    | |_) |  __/| || (_| |
+    |____/ \___| \__\__,_|
+                
+          Spring Boot Application
+:: Teste Java Full Stack  Cezi Software Engineer::        (v1.0.0)
